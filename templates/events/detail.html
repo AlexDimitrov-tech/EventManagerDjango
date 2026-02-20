@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load event_filters %}
+
+{% block title %}{{ event.title }} - Event Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>{{ event.title }}</h1>
+    <div>
+        <a href="{% url 'event_edit' event.pk %}" class="btn btn-secondary">Edit</a>
+        <a href="{% url 'event_delete' event.pk %}" class="btn btn-danger">Delete</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <h5>Description</h5>
+                <p>{{ event.description }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Event Details</h5>
+                <p><strong>Date:</strong> {{ event.date|format_date }}</p>
+                <p><strong>Time:</strong> {{ event.time|format_time }}</p>
+                <p><strong>Price:</strong> {{ event.price|format_price }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <h5>Venue</h5>
+                <p>
+                    <strong>{{ event.venue.name }}</strong><br>
+                    {{ event.venue.address }}<br>
+                    Capacity: {{ event.venue.capacity }} people
+                </p>
+                <a href="{% url 'venue_detail' event.venue.pk %}" class="btn btn-sm btn-outline-primary">View Venue</a>
+            </div>
+            <div class="col-md-6">
+                <h5>Categories</h5>
+                {% if event.categories.all %}
+                    {% for category in event.categories.all %}
+                        <span class="badge bg-primary me-2">{{ category.name }}</span>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No categories assigned</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{% url 'event_list' %}" class="btn btn-primary">Back to Events</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

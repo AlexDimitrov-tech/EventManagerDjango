@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load event_filters %}
+
+{% block title %}Home - Event Manager{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-4">Welcome to Event Manager</h1>
+        <p class="lead">Discover and manage events in your area</p>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Upcoming Events</h5>
+                <p class="card-text">Browse all upcoming events</p>
+                <a href="{% url 'event_list' %}" class="btn btn-primary">View Events</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Venues</h5>
+                <p class="card-text">Explore available venues</p>
+                <a href="{% url 'venue_list' %}" class="btn btn-primary">View Venues</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Categories</h5>
+                <p class="card-text">Browse event categories</p>
+                <a href="{% url 'category_list' %}" class="btn btn-primary">View Categories</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="mb-3">Upcoming Events</h2>
+<div class="row">
+    {% for event in upcoming_events %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ event.title }}</h5>
+                <p class="card-text">{{ event.description|truncate_text:100 }}</p>
+                <p class="text-muted">
+                    <small>{{ event.date|format_date }} at {{ event.time|format_time }}</small><br>
+                    <small>{{ event.venue.name }}</small>
+                </p>
+                <a href="{% url 'event_detail' event.pk %}" class="btn btn-sm btn-outline-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p class="text-muted">No upcoming events available.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% if upcoming_events|length >= 6 %}
+<div class="text-center mt-4">
+    <a href="{% url 'event_list' %}" class="btn btn-primary">View All Events</a>
+</div>
+{% endif %}
+{% endblock %}
+

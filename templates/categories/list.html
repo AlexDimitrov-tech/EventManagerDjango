@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Categories - Event Manager{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Event Categories</h1>
+
+<div class="row">
+    {% for category in categories %}
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ category.name }}</h5>
+                {% if category.description %}
+                    <p class="card-text">{{ category.description }}</p>
+                {% else %}
+                    <p class="card-text text-muted">No description available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No categories available.</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
