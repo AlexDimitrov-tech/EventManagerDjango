@@ -3,25 +3,31 @@
 {% block title %}Categories - Event Manager{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Event Categories</h1>
+<h1 class="mb-4 text-center">Event Categories</h1>
 
 <div class="row">
     {% for category in categories %}
-    <div class="col-md-4 mb-3">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">{{ category.name }}</h5>
-                {% if category.description %}
-                    <p class="card-text">{{ category.description }}</p>
-                {% else %}
-                    <p class="card-text text-muted">No description available</p>
-                {% endif %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title mb-3">🏷️ {{ category.name }}</h5>
+                <div class="flex-grow-1">
+                    {% if category.description %}
+                        <p class="card-text">{{ category.description }}</p>
+                    {% else %}
+                        <p class="card-text text-muted">No description available</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
     {% empty %}
     <div class="col-12">
-        <div class="alert alert-info">No categories available.</div>
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <p class="text-muted mb-0">No categories available.</p>
+            </div>
+        </div>
     </div>
     {% endfor %}
 </div>

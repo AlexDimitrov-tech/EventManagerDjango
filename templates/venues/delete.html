@@ -5,20 +5,21 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <h1 class="mb-4">Delete Venue</h1>
+        <h1 class="mb-4 text-center">⚠️ Delete Venue</h1>
         <div class="card border-danger">
-            <div class="card-body">
-                <h5 class="card-title text-danger">Are you sure you want to delete this venue?</h5>
-                <p class="card-text">
-                    <strong>Name:</strong> {{ venue.name }}<br>
-                    <strong>Address:</strong> {{ venue.address }}<br>
-                    <strong>Capacity:</strong> {{ venue.capacity }} people
-                </p>
-                <p class="text-danger">This action cannot be undone. All events at this venue will also be deleted.</p>
+            <div class="card-body text-center">
+                <div class="mb-3" style="font-size: 4rem;">🗑️</div>
+                <h5 class="card-title text-danger mb-3">Are you sure you want to delete this venue?</h5>
+                <div class="text-start mb-3">
+                    <p class="mb-2"><strong>Name:</strong> {{ venue.name }}</p>
+                    <p class="mb-2"><strong>Address:</strong> {{ venue.address }}</p>
+                    <p class="mb-0"><strong>Capacity:</strong> {{ venue.capacity }} people</p>
+                </div>
+                <p class="text-danger mb-4"><strong>This action cannot be undone. All events at this venue will also be deleted.</strong></p>
                 <form method="post" class="d-inline">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
-                    <a href="{% url 'venue_detail' venue.pk %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger btn-lg">Yes, Delete</button>
+                    <a href="{% url 'venue_detail' venue.pk %}" class="btn btn-secondary btn-lg">Cancel</a>
                 </form>
             </div>
         </div>

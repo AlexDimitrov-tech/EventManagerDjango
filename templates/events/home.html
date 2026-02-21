@@ -4,69 +4,86 @@
 {% block title %}Home - Event Manager{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <h1 class="display-4">Welcome to Event Manager</h1>
-        <p class="lead">Discover and manage events in your area</p>
+<div class="row mb-5">
+    <div class="col-12 text-center mb-4">
+        <h1 class="display-4 mb-3">Welcome to Event Manager</h1>
+        <p class="lead text-muted">Discover and manage events with style and precision</p>
     </div>
 </div>
 
 <div class="row mb-5">
-    <div class="col-md-4 mb-3">
-        <div class="card">
-            <div class="card-body">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3" style="font-size: 3rem;">🎉</div>
                 <h5 class="card-title">Upcoming Events</h5>
-                <p class="card-text">Browse all upcoming events</p>
-                <a href="{% url 'event_list' %}" class="btn btn-primary">View Events</a>
+                <p class="card-text text-muted">Browse all upcoming events and discover what's happening</p>
+                <a href="{% url 'event_list' %}" class="btn btn-primary mt-3">View Events</a>
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="card">
-            <div class="card-body">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3" style="font-size: 3rem;">🏛️</div>
                 <h5 class="card-title">Venues</h5>
-                <p class="card-text">Explore available venues</p>
-                <a href="{% url 'venue_list' %}" class="btn btn-primary">View Venues</a>
+                <p class="card-text text-muted">Explore available venues and their capacities</p>
+                <a href="{% url 'venue_list' %}" class="btn btn-secondary mt-3">View Venues</a>
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="card">
-            <div class="card-body">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3" style="font-size: 3rem;">🏷️</div>
                 <h5 class="card-title">Categories</h5>
-                <p class="card-text">Browse event categories</p>
-                <a href="{% url 'category_list' %}" class="btn btn-primary">View Categories</a>
+                <p class="card-text text-muted">Browse event categories and find your interests</p>
+                <a href="{% url 'category_list' %}" class="btn btn-primary mt-3">View Categories</a>
             </div>
         </div>
     </div>
 </div>
 
-<h2 class="mb-3">Upcoming Events</h2>
+<h2 class="mb-4 text-center">Featured Upcoming Events</h2>
 <div class="row">
     {% for event in upcoming_events %}
     <div class="col-md-4 mb-4">
         <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">{{ event.title }}</h5>
-                <p class="card-text">{{ event.description|truncate_text:100 }}</p>
-                <p class="text-muted">
-                    <small>{{ event.date|format_date }} at {{ event.time|format_time }}</small><br>
-                    <small>{{ event.venue.name }}</small>
-                </p>
-                <a href="{% url 'event_detail' event.pk %}" class="btn btn-sm btn-outline-primary">View Details</a>
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title mb-3">{{ event.title }}</h5>
+                <p class="card-text flex-grow-1">{{ event.description|truncate_text:100 }}</p>
+                <div class="mb-3">
+                    <p class="text-muted mb-1">
+                        <strong>📅</strong> {{ event.date|format_date }} at {{ event.time|format_time }}
+                    </p>
+                    <p class="text-muted mb-1">
+                        <strong>📍</strong> {{ event.venue.name }}
+                    </p>
+                    {% if event.price > 0 %}
+                    <p class="text-muted mb-0">
+                        <strong>💰</strong> {{ event.price|format_price }}
+                    </p>
+                    {% endif %}
+                </div>
+                <a href="{% url 'event_detail' event.pk %}" class="btn btn-outline-primary">View Details</a>
             </div>
         </div>
     </div>
     {% empty %}
     <div class="col-12">
-        <p class="text-muted">No upcoming events available.</p>
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <p class="text-muted mb-0">No upcoming events available. Create your first event!</p>
+                <a href="{% url 'event_create' %}" class="btn btn-primary mt-3">Create Event</a>
+            </div>
+        </div>
     </div>
     {% endfor %}
 </div>
 
 {% if upcoming_events|length >= 6 %}
-<div class="text-center mt-4">
-    <a href="{% url 'event_list' %}" class="btn btn-primary">View All Events</a>
+<div class="text-center mt-5">
+    <a href="{% url 'event_list' %}" class="btn btn-primary btn-lg">View All Events</a>
 </div>
 {% endif %}
 {% endblock %}

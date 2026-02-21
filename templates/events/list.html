@@ -5,17 +5,20 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Events</h1>
-    <a href="{% url 'event_create' %}" class="btn btn-primary">Create Event</a>
+    <h1>All Events</h1>
+    <a href="{% url 'event_create' %}" class="btn btn-primary">+ Create Event</a>
 </div>
 
 <div class="card mb-4">
     <div class="card-body">
+        <h5 class="mb-3">🔍 Search & Filter</h5>
         <form method="get" class="row g-3">
             <div class="col-md-3">
+                <label class="form-label">Search</label>
                 <input type="text" name="search" class="form-control" placeholder="Search events..." value="{{ search }}">
             </div>
             <div class="col-md-3">
+                <label class="form-label">Venue</label>
                 <select name="venue" class="form-select">
                     <option value="">All Venues</option>
                     {% for venue in venues %}
@@ -24,6 +27,7 @@
                 </select>
             </div>
             <div class="col-md-3">
+                <label class="form-label">Category</label>
                 <select name="category" class="form-select">
                     <option value="">All Categories</option>
                     {% for category in categories %}
@@ -32,14 +36,15 @@
                 </select>
             </div>
             <div class="col-md-2">
+                <label class="form-label">Sort By</label>
                 <select name="sort" class="form-select">
-                    <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Sort by Date</option>
-                    <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Sort by Title</option>
-                    <option value="price" {% if sort_by == 'price' %}selected{% endif %}>Sort by Price</option>
+                    <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Date</option>
+                    <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
+                    <option value="price" {% if sort_by == 'price' %}selected{% endif %}>Price</option>
                 </select>
             </div>
-            <div class="col-md-1">
-                <button type="submit" class="btn btn-secondary w-100">Filter</button>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-secondary w-100">Apply</button>
             </div>
         </form>
     </div>
@@ -49,23 +54,28 @@
     {% for event in events %}
     <div class="col-md-6 mb-4">
         <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">{{ event.title }}</h5>
-                <p class="card-text">{{ event.description|truncate_text:150 }}</p>
-                <p class="text-muted mb-2">
-                    <strong>Date:</strong> {{ event.date|format_date }}<br>
-                    <strong>Time:</strong> {{ event.time|format_time }}<br>
-                    <strong>Venue:</strong> {{ event.venue.name }}<br>
-                    <strong>Price:</strong> {{ event.price|format_price }}
-                </p>
-                {% if event.categories.all %}
-                <p class="mb-2">
-                    {% for category in event.categories.all %}
-                        <span class="badge bg-secondary">{{ category.name }}</span>
-                    {% endfor %}
-                </p>
-                {% endif %}
-                <div class="mt-3">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title mb-3">{{ event.title }}</h5>
+                <p class="card-text flex-grow-1">{{ event.description|truncate_text:150 }}</p>
+                <div class="mb-3">
+                    <p class="text-muted mb-1">
+                        <strong>📅 Date:</strong> {{ event.date|format_date }} at {{ event.time|format_time }}
+                    </p>
+                    <p class="text-muted mb-1">
+                        <strong>📍 Venue:</strong> {{ event.venue.name }}
+                    </p>
+                    <p class="text-muted mb-2">
+                        <strong>💰 Price:</strong> {{ event.price|format_price }}
+                    </p>
+                    {% if event.categories.all %}
+                    <div class="mb-2">
+                        {% for category in event.categories.all %}
+                            <span class="badge bg-secondary me-1">{{ category.name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="mt-auto">
                     <a href="{% url 'event_detail' event.pk %}" class="btn btn-sm btn-primary">View Details</a>
                     <a href="{% url 'event_edit' event.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
                     <a href="{% url 'event_delete' event.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
@@ -75,7 +85,12 @@
     </div>
     {% empty %}
     <div class="col-12">
-        <div class="alert alert-info">No events found.</div>
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <p class="text-muted mb-3">No events found matching your criteria.</p>
+                <a href="{% url 'event_create' %}" class="btn btn-primary">Create Your First Event</a>
+            </div>
+        </div>
     </div>
     {% endfor %}
 </div>

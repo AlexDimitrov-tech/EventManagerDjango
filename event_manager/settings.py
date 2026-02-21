@@ -51,28 +51,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'event_manager.wsgi.application'
 
-POSTGRES_DATABASE = {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'event_manager_db',
-    'USER': 'ivan',
-    'PASSWORD': 'postgres',
-    'HOST': 'localhost',
-    'PORT': '5432',
-}
-
-# Use SQLite for local development when DEBUG is True. To force PostgreSQL,
-# set the environment variable DJANGO_USE_POSTGRES=1
-if os.environ.get('DJANGO_USE_POSTGRES') == '1':
-    DATABASES = {'default': POSTGRES_DATABASE}
-elif DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    DATABASES = {'default': POSTGRES_DATABASE}
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
