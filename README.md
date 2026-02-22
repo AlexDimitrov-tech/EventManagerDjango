@@ -1,134 +1,124 @@
 # Event Manager
 
-A Django web application for managing events, venues, and categories.
+This is a web app I built using Django and PostgreSQL. The idea is pretty simple — you can manage events, where they happen (venues), and what type of events they are (categories). It supports creating, editing, deleting and filtering all of that.
 
-## Features
+---
 
-- Full CRUD operations for Events and Venues
-- Event filtering and sorting
-- Category management
-- Responsive Bootstrap design
-- Custom template filters and tags
+## What it does
 
-## Requirements
+- Create and manage events with a title, description, date, time, price and venue
+- Assign multiple categories to an event
+- Full venue management (name, address, capacity)
+- Filter and search events by name, venue or category
+- Sort events by date, title or price
+- Custom 404 page
 
-- Python 3.8+
+---
+
+## Tech stack
+
+- Python 3.12
+- Django 6.x
 - PostgreSQL
-- Django 5.0+
+- Bootstrap 5 (just for grid/layout, most styling is custom CSS)
 
-## Installation
+---
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
+## Setup
+
+You'll need Python 3 and PostgreSQL installed before starting.
+
+**1. Clone the repo and go into the folder**
+
+```
+git clone <repo-url>
 cd event_manager
 ```
 
-2. Create a virtual environment:
-```bash
+**2. Create a virtual environment**
+
+```
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-3. Install dependencies:
-```bash
+**3. Install requirements**
+
+```
 pip install -r requirements.txt
 ```
 
-4. Set up PostgreSQL database:
-```bash
+**4. Create the database**
+
+Make sure PostgreSQL is running, then:
+
+```
 createdb event_manager_db
 ```
 
-5. Update database settings in `event_manager/settings.py` if needed:
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'event_manager_db',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-```
+**5. Edit database settings if needed**
 
-6. Run migrations:
-```bash
+Open `event_manager/settings.py` and update the DATABASES section with your PostgreSQL credentials. By default it expects:
+- user: `ivan`
+- password: `postgres`
+- host: `localhost`
+- port: `5432`
+
+**6. Run migrations**
+
+```
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-7. Create a superuser (optional, for admin access):
-```bash
-python manage.py createsuperuser
-```
+**7. Start the server**
 
-8. Run the development server:
-```bash
+```
 python manage.py runserver
 ```
 
-9. Open your browser and navigate to `http://127.0.0.1:8000/`
+Then go to `http://127.0.0.1:8000/` in your browser.
 
-## Project Structure
+---
+
+## Project layout
 
 ```
 event_manager/
-├── event_manager/          # Main project directory
-│   ├── settings.py         # Project settings
-│   ├── urls.py            # Main URL configuration
-│   └── wsgi.py            # WSGI configuration
-├── events/                 # Events app
-│   ├── models.py          # Event model
-│   ├── views.py           # Event views
-│   ├── forms.py           # Event forms
-│   ├── urls.py            # Event URLs
-│   └── templatetags/      # Custom template tags
-├── venues/                 # Venues app
-│   ├── models.py          # Venue model
-│   ├── views.py           # Venue views
-│   ├── forms.py           # Venue forms
-│   └── urls.py            # Venue URLs
-├── categories/             # Categories app
-│   ├── models.py          # Category model
-│   ├── views.py           # Category views
-│   └── urls.py            # Category URLs
-├── templates/              # HTML templates
-│   ├── base.html          # Base template
-│   ├── 404.html           # Custom 404 page
-│   ├── events/            # Event templates
-│   ├── venues/            # Venue templates
-│   └── categories/        # Category templates
-└── manage.py              # Django management script
+├── event_manager/       <- project config (settings, urls, wsgi)
+├── events/              <- events app (models, views, forms, urls, templatetags)
+├── venues/              <- venues app
+├── categories/          <- categories app
+├── templates/           <- all HTML templates
+│   ├── base.html
+│   ├── 404.html
+│   ├── events/
+│   ├── venues/
+│   └── categories/
+├── static/
+│   └── css/style.css
+├── manage.py
+└── requirements.txt
 ```
 
-## Database Models
+---
 
-- **Event**: Main event model with title, description, date, time, venue (FK), categories (M2M), and price
-- **Venue**: Venue model with name, address, and capacity
-- **Category**: Category model with name and description
+## Database models
 
-## Environment Variables
+**Event** — title, description, date, time, price (decimal), venue (foreign key), categories (many-to-many)
 
-For local development, update the database credentials in `event_manager/settings.py`:
+**Venue** — name, address, capacity (integer), created_at
 
-- `NAME`: Database name (default: 'event_manager_db')
-- `USER`: PostgreSQL user (default: 'postgres')
-- `PASSWORD`: PostgreSQL password (default: 'postgres')
-- `HOST`: Database host (default: 'localhost')
-- `PORT`: Database port (default: '5432')
+**Category** — name, description
 
-## Usage
+---
 
-1. Navigate to the home page to see upcoming events
-2. Use the navigation menu to access Events, Venues, and Categories
-3. Create, edit, and delete events and venues
-4. Filter events by venue, category, or search term
-5. Sort events by date, title, or price
+## Notes
 
-## License
+- `events/templatetags/` has custom filters for formatting dates, times and prices the way I wanted
+- The setup script `setup_db.sh` can be used to create the database and run migrations in one go if you prefer that
+- Admin panel is available at `/admin/` if you create a superuser with `python manage.py createsuperuser`
 
-This project is created for educational purposes.
+---
 
+Made for a school/course assignment. Not intended for production use.

@@ -1,98 +1,110 @@
 {% extends 'base.html' %}
 {% load event_filters %}
 
-{% block title %}Events - Event Manager{% endblock %}
+{% block title %}Events — EventManager{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>All Events</h1>
-    <a href="{% url 'event_create' %}" class="btn btn-primary">+ Create Event</a>
+
+<div class="page-header" style="margin-top: 0.5rem;">
+    <h1>Events</h1>
+    <a href="{% url 'event_create' %}" class="btn btn-primary">+ New Event</a>
 </div>
 
-<div class="card mb-4">
-    <div class="card-body">
-        <h5 class="mb-3">🔍 Search & Filter</h5>
-        <form method="get" class="row g-3">
-            <div class="col-md-3">
-                <label class="form-label">Search</label>
-                <input type="text" name="search" class="form-control" placeholder="Search events..." value="{{ search }}">
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">Venue</label>
-                <select name="venue" class="form-select">
-                    <option value="">All Venues</option>
-                    {% for venue in venues %}
-                        <option value="{{ venue.pk }}" {% if selected_venue == venue.pk|stringformat:"s" %}selected{% endif %}>{{ venue.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">Category</label>
-                <select name="category" class="form-select">
-                    <option value="">All Categories</option>
-                    {% for category in categories %}
-                        <option value="{{ category.pk }}" {% if selected_category == category.pk|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label class="form-label">Sort By</label>
-                <select name="sort" class="form-select">
-                    <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Date</option>
-                    <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
-                    <option value="price" {% if sort_by == 'price' %}selected{% endif %}>Price</option>
-                </select>
-            </div>
-            <div class="col-md-1 d-flex align-items-end">
-                <button type="submit" class="btn btn-secondary w-100">Apply</button>
-            </div>
-        </form>
-    </div>
+<div class="filter-bar">
+    <h5>Filter &amp; Search</h5>
+    <form method="get" class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label">Search</label>
+            <input type="text" name="search" class="form-control" placeholder="Event name..." value="{{ search }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Venue</label>
+            <select name="venue" class="form-select">
+                <option value="">All Venues</option>
+                {% for venue in venues %}
+                <option value="{{ venue.pk }}" {% if selected_venue == venue.pk|stringformat:"s" %}selected{% endif %}>
+                    {{ venue.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.pk }}" {% if selected_category == category.pk|stringformat:"s" %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Sort</label>
+            <select name="sort" class="form-select">
+                <option value="date" {% if sort_by == 'date' %}selected{% endif %}>By Date</option>
+                <option value="title" {% if sort_by == 'title' %}selected{% endif %}>By Title</option>
+                <option value="price" {% if sort_by == 'price' %}selected{% endif %}>By Price</option>
+            </select>
+        </div>
+        <div class="col-md-1 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Go</button>
+        </div>
+    </form>
 </div>
 
-<div class="row">
+<div class="row g-3">
     {% for event in events %}
-    <div class="col-md-6 mb-4">
+    <div class="col-md-6">
         <div class="card h-100">
             <div class="card-body d-flex flex-column">
-                <h5 class="card-title mb-3">{{ event.title }}</h5>
-                <p class="card-text flex-grow-1">{{ event.description|truncate_text:150 }}</p>
-                <div class="mb-3">
-                    <p class="text-muted mb-1">
-                        <strong>📅 Date:</strong> {{ event.date|format_date }} at {{ event.time|format_time }}
-                    </p>
-                    <p class="text-muted mb-1">
-                        <strong>📍 Venue:</strong> {{ event.venue.name }}
-                    </p>
-                    <p class="text-muted mb-2">
-                        <strong>💰 Price:</strong> {{ event.price|format_price }}
-                    </p>
-                    {% if event.categories.all %}
-                    <div class="mb-2">
-                        {% for category in event.categories.all %}
-                            <span class="badge bg-secondary me-1">{{ category.name }}</span>
+
+                <div
+                    style="display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.6rem;">
+                    <h5 class="card-title" style="margin-bottom: 0;">{{ event.title }}</h5>
+                    <div style="display: flex; gap: 0.25rem; flex-wrap: wrap; flex-shrink: 0;">
+                        {% for cat in event.categories.all|slice:":2" %}
+                        <span class="badge bg-secondary">{{ cat.name }}</span>
                         {% endfor %}
                     </div>
-                    {% endif %}
                 </div>
-                <div class="mt-auto">
-                    <a href="{% url 'event_detail' event.pk %}" class="btn btn-sm btn-primary">View Details</a>
-                    <a href="{% url 'event_edit' event.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                    <a href="{% url 'event_delete' event.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+
+                <p class="card-text flex-grow-1" style="font-size: 0.875rem; margin-bottom: 1rem;">
+                    {{ event.description|truncate_text:140 }}
+                </p>
+
+                <div style="display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin-bottom: 1rem;">
+                    <span style="color: var(--grey2); font-size: 0.8rem;">
+                        📅 {{ event.date|format_date }} at {{ event.time|format_time }}
+                    </span>
+                    <span style="color: var(--grey2); font-size: 0.8rem;">
+                        📍 {{ event.venue.name }}
+                    </span>
+                    <span style="color: var(--grey2); font-size: 0.8rem;">
+                        💰 {{ event.price|format_price }}
+                    </span>
                 </div>
+
+                <div class="mt-auto d-flex gap-2">
+                    <a href="{% url 'event_detail' event.pk %}" class="btn btn-primary btn-sm">View</a>
+                    <a href="{% url 'event_edit' event.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                    <a href="{% url 'event_delete' event.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                </div>
+
             </div>
         </div>
     </div>
     {% empty %}
     <div class="col-12">
         <div class="card">
-            <div class="card-body text-center py-5">
-                <p class="text-muted mb-3">No events found matching your criteria.</p>
-                <a href="{% url 'event_create' %}" class="btn btn-primary">Create Your First Event</a>
+            <div class="empty-state">
+                <div class="icon">🔍</div>
+                <p>No events matching your filters.</p>
+                <a href="{% url 'event_create' %}" class="btn btn-primary">Create First Event</a>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
-{% endblock %}
 
+{% endblock %}

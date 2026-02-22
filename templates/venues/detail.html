@@ -1,38 +1,67 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ venue.name }} - Event Manager{% endblock %}
+{% block title %}{{ venue.name }} — EventManager{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>🏛️ {{ venue.name }}</h1>
-    <div>
-        <a href="{% url 'venue_edit' venue.pk %}" class="btn btn-secondary">✏️ Edit</a>
-        <a href="{% url 'venue_delete' venue.pk %}" class="btn btn-danger">🗑️ Delete</a>
+
+<div style="margin-top: 0.25rem; margin-bottom: 1.5rem;">
+    <a href="{% url 'venue_list' %}"
+        style="color: var(--grey2); font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem; transition: color 0.15s;"
+        onmouseover="this.style.color='var(--violet2)'" onmouseout="this.style.color='var(--grey2)'">
+        ← Back to Venues
+    </a>
+</div>
+
+<div
+    style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap;">
+    <h1 style="font-size: 1.7rem; letter-spacing: -0.5px;">{{ venue.name }}</h1>
+    <div class="d-flex gap-2">
+        <a href="{% url 'venue_edit' venue.pk %}" class="btn btn-secondary">Edit</a>
+        <a href="{% url 'venue_delete' venue.pk %}" class="btn btn-outline-danger">Delete</a>
     </div>
 </div>
 
-<div class="card mb-4">
+<div class="card" style="margin-bottom: 1rem;">
     <div class="card-body">
-        <h5 class="mb-3">📍 Venue Information</h5>
-        <p class="mb-2"><strong>Address:</strong> {{ venue.address }}</p>
-        <p class="mb-2"><strong>Capacity:</strong> {{ venue.capacity }} people</p>
-        <p class="mb-0 text-muted"><small>Created: {{ venue.created_at|date:"F d, Y" }}</small></p>
+        <p
+            style="color: var(--grey2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; margin-bottom: 0.9rem;">
+            Venue Info</p>
+        <div style="display: flex; flex-direction: column; gap: 0.55rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: var(--grey2); font-size: 0.875rem;">Address</span>
+                <span style="color: var(--white); font-size: 0.9rem;">{{ venue.address }}</span>
+            </div>
+            <div style="height: 1px; background: var(--border);"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: var(--grey2); font-size: 0.875rem;">Capacity</span>
+                <span style="color: var(--violet2); font-weight: 600; font-size: 0.9rem;">{{ venue.capacity }}
+                    people</span>
+            </div>
+            <div style="height: 1px; background: var(--border);"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: var(--grey2); font-size: 0.875rem;">Added</span>
+                <span style="color: var(--grey2); font-size: 0.875rem;">{{ venue.created_at|date:"F d, Y" }}</span>
+            </div>
+        </div>
     </div>
 </div>
 
 {% if events %}
-<div class="card mb-4">
+<div class="card" style="margin-bottom: 1rem;">
     <div class="card-body">
-        <h5 class="mb-3">🎉 Events at this Venue</h5>
+        <p
+            style="color: var(--grey2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; margin-bottom: 0.75rem;">
+            Events here ({{ events|length }})
+        </p>
         <div class="list-group">
             {% for event in events %}
             <a href="{% url 'event_detail' event.pk %}" class="list-group-item list-group-item-action">
-                <div class="d-flex w-100 justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <h6 class="mb-1">{{ event.title }}</h6>
-                        <p class="mb-1 text-muted">{{ event.description|truncatewords:20 }}</p>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+                    <div>
+                        <h6>{{ event.title }}</h6>
+                        <p>{{ event.description|truncatewords:15 }}</p>
                     </div>
-                    <small class="text-muted ms-3">{{ event.date|date:"M d, Y" }}</small>
+                    <small>{{ event.date|date:"M d, Y" }}</small>
                 </div>
             </a>
             {% endfor %}
@@ -40,16 +69,17 @@
     </div>
 </div>
 {% else %}
-<div class="card mb-4">
-    <div class="card-body text-center py-4">
-        <p class="text-muted mb-0">No events scheduled at this venue yet.</p>
+<div class="card" style="margin-bottom: 1rem;">
+    <div class="card-body" style="text-align: center; padding: 2.5rem 1.5rem;">
+        <p style="color: var(--grey2); font-size: 0.875rem; margin-bottom: 1rem;">No events scheduled here yet.</p>
+        <a href="{% url 'event_create' %}" class="btn btn-primary btn-sm">Create Event</a>
     </div>
 </div>
 {% endif %}
 
-<div class="d-flex gap-2">
-    <a href="{% url 'venue_list' %}" class="btn btn-primary">← Back to Venues</a>
-    <a href="{% url 'venue_edit' venue.pk %}" class="btn btn-secondary">Edit Venue</a>
+<div class="d-flex gap-2" style="margin-top: 0.5rem;">
+    <a href="{% url 'venue_list' %}" class="btn btn-outline-secondary">← Venues</a>
+    <a href="{% url 'venue_edit' venue.pk %}" class="btn btn-primary">Edit Venue</a>
 </div>
-{% endblock %}
 
+{% endblock %}

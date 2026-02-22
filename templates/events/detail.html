@@ -1,64 +1,89 @@
 {% extends 'base.html' %}
 {% load event_filters %}
 
-{% block title %}{{ event.title }} - Event Manager{% endblock %}
+{% block title %}{{ event.title }} — EventManager{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>{{ event.title }}</h1>
+
+<div style="margin-top: 0.25rem; margin-bottom: 1.5rem;">
+    <a href="{% url 'event_list' %}"
+        style="color: var(--grey2); font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem; transition: color 0.15s;"
+        onmouseover="this.style.color='var(--violet2)'" onmouseout="this.style.color='var(--grey2)'">
+        ← Back to Events
+    </a>
+</div>
+
+<div
+    style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap;">
     <div>
-        <a href="{% url 'event_edit' event.pk %}" class="btn btn-secondary">✏️ Edit</a>
-        <a href="{% url 'event_delete' event.pk %}" class="btn btn-danger">🗑️ Delete</a>
+        <div style="display: flex; gap: 0.35rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+            {% for cat in event.categories.all %}
+            <span class="badge bg-secondary">{{ cat.name }}</span>
+            {% endfor %}
+        </div>
+        <h1 style="font-size: 1.7rem; letter-spacing: -0.5px;">{{ event.title }}</h1>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'event_edit' event.pk %}" class="btn btn-secondary">Edit</a>
+        <a href="{% url 'event_delete' event.pk %}" class="btn btn-outline-danger">Delete</a>
     </div>
 </div>
 
-<div class="card mb-4">
+<div class="card" style="margin-bottom: 1rem;">
     <div class="card-body">
-        <h5 class="mb-3">📝 Description</h5>
-        <p class="lead">{{ event.description }}</p>
+        <p
+            style="color: var(--grey2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; margin-bottom: 0.6rem;">
+            Description</p>
+        <p style="color: var(--grey1); font-size: 0.95rem; line-height: 1.7;">{{ event.description }}</p>
     </div>
 </div>
 
-<div class="row mb-4">
-    <div class="col-md-6 mb-3">
+<div class="row g-3" style="margin-bottom: 1rem;">
+    <div class="col-md-6">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="mb-3">📅 Event Details</h5>
-                <p class="mb-2"><strong>Date:</strong> {{ event.date|format_date }}</p>
-                <p class="mb-2"><strong>Time:</strong> {{ event.time|format_time }}</p>
-                <p class="mb-0"><strong>Price:</strong> {{ event.price|format_price }}</p>
+                <p
+                    style="color: var(--grey2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; margin-bottom: 0.9rem;">
+                    Event Details</p>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--grey2); font-size: 0.85rem;">Date</span>
+                        <span style="color: var(--white); font-weight: 500; font-size: 0.9rem;">{{ event.date|format_date }}</span>
+                    </div>
+                    <div style="height: 1px; background: var(--border);"></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--grey2); font-size: 0.85rem;">Time</span>
+                        <span style="color: var(--white); font-weight: 500; font-size: 0.9rem;">{{ event.time|format_time }}</span>
+                    </div>
+                    <div style="height: 1px; background: var(--border);"></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--grey2); font-size: 0.85rem;">Price</span>
+                        <span style="color: var(--amber2); font-weight: 600; font-size: 0.9rem;">{{ event.price|format_price }}</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6 mb-3">
+
+    <div class="col-md-6">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="mb-3">🏷️ Categories</h5>
-                {% if event.categories.all %}
-                    {% for category in event.categories.all %}
-                        <span class="badge bg-secondary me-2 mb-2">{{ category.name }}</span>
-                    {% endfor %}
-                {% else %}
-                    <p class="text-muted mb-0">No categories assigned</p>
-                {% endif %}
+                <p
+                    style="color: var(--grey2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; margin-bottom: 0.9rem;">
+                    Venue</p>
+                <p style="color: var(--white); font-weight: 600; font-size: 1rem; margin-bottom: 0.3rem;">{{ event.venue.name }}</p>
+                <p style="color: var(--grey2); font-size: 0.875rem; margin-bottom: 0.3rem;">{{ event.venue.address }}
+                </p>
+                <p style="color: var(--grey3); font-size: 0.82rem; margin-bottom: 1rem;">Capacity: {{ event.venue.capacity }} people</p>
+                <a href="{% url 'venue_detail' event.venue.pk %}" class="btn btn-outline-primary btn-sm">View Venue</a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card mb-4">
-    <div class="card-body">
-        <h5 class="mb-3">📍 Venue Information</h5>
-        <p class="mb-2"><strong>{{ event.venue.name }}</strong></p>
-        <p class="mb-2 text-muted">{{ event.venue.address }}</p>
-        <p class="mb-3 text-muted">Capacity: {{ event.venue.capacity }} people</p>
-        <a href="{% url 'venue_detail' event.venue.pk %}" class="btn btn-outline-primary">View Venue Details</a>
-    </div>
+<div class="d-flex gap-2" style="margin-top: 1rem;">
+    <a href="{% url 'event_list' %}" class="btn btn-outline-secondary">← Events</a>
+    <a href="{% url 'event_edit' event.pk %}" class="btn btn-primary">Edit Event</a>
 </div>
 
-<div class="d-flex gap-2">
-    <a href="{% url 'event_list' %}" class="btn btn-primary">← Back to Events</a>
-    <a href="{% url 'event_edit' event.pk %}" class="btn btn-secondary">Edit Event</a>
-</div>
 {% endblock %}
-
