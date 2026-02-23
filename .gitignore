@@ -11,5 +11,5 @@ ENV/
 media/
 staticfiles/
 db.sqlite3
-event_manager_project.zip
+*.zip
 

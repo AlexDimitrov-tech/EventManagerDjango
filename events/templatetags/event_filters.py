@@ -1,7 +1,8 @@
 from django import template
-from datetime import date, datetime
+from datetime import date
 
 register = template.Library()
+
 
 @register.filter
 def format_date(value):
@@ -9,11 +10,13 @@ def format_date(value):
         return value.strftime('%B %d, %Y')
     return value
 
+
 @register.filter
 def format_time(value):
     if hasattr(value, 'strftime'):
         return value.strftime('%I:%M %p')
     return value
+
 
 @register.filter
 def truncate_text(value, length=100):
@@ -21,7 +24,7 @@ def truncate_text(value, length=100):
         return value[:length] + '...'
     return value
 
+
 @register.filter
 def format_price(value):
     return f"${value:.2f}"
-

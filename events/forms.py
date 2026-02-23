@@ -5,6 +5,7 @@ from .models import Event
 from venues.models import Venue
 from categories.models import Category
 
+
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
@@ -17,15 +18,6 @@ class EventForm(forms.ModelForm):
             'venue': forms.Select(attrs={'class': 'form-control'}),
             'categories': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
             'price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': '0.00'}),
-        }
-        labels = {
-            'title': 'Event Title',
-            'description': 'Description',
-            'date': 'Date',
-            'time': 'Time',
-            'venue': 'Venue',
-            'categories': 'Categories',
-            'price': 'Price',
         }
         help_texts = {
             'price': 'Enter price in currency units',
@@ -48,6 +40,7 @@ class EventForm(forms.ModelForm):
             raise ValidationError('Price cannot be negative.')
         return price
 
+
 class EventEditForm(EventForm):
     created_at = forms.DateTimeField(
         required=False,
@@ -63,3 +56,5 @@ class EventEditForm(EventForm):
         if self.instance and self.instance.pk:
             self.fields['created_at'].initial = self.instance.created_at
 
+    def clean_date(self):
+        return self.cleaned_data.get('date')
