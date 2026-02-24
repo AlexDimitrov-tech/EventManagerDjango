@@ -1,89 +1,82 @@
 {% extends 'base.html' %}
-{% load event_filters %}
+{% load event_extras %}
 
-{% block title %}{{ event.title }} — EventManager{% endblock %}
+{% block title %}{{ event.title }} – LocalVibe{% endblock %}
 
 {% block content %}
+<div class="container py-4">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'event_list' %}">Events</a></li>
+      <li class="breadcrumb-item active">{{ event.title }}</li>
+    </ol>
+  </nav>
 
-<div style="margin-top: 0.25rem; margin-bottom: 1.5rem;">
-    <a href="{% url 'event_list' %}"
-        style="color: var(--grey2); font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem; transition: color 0.15s;"
-        onmouseover="this.style.color='var(--violet2)'" onmouseout="this.style.color='var(--grey2)'">
-        ← Back to Events
-    </a>
-</div>
+  <div class="row">
+    <div class="col-md-8">
+      <h1 class="mb-2">{{ event.title }}</h1>
+      <div class="mb-3">
+        <span class="badge bg-{{ event.get_status_color }} me-1">{{ event.status }}</span>
+        {% if event.is_free %}
+        <span class="badge bg-info">Free Entry</span>
+        {% endif %}
+        {% if event.is_past %}
+        <span class="badge bg-dark">Past Event</span>
+        {% endif %}
+      </div>
 
-<div
-    style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap;">
-    <div>
-        <div style="display: flex; gap: 0.35rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
-            {% for cat in event.categories.all %}
-            <span class="badge bg-secondary">{{ cat.name }}</span>
-            {% endfor %}
-        </div>
-        <h1 style="font-size: 1.7rem; letter-spacing: -0.5px;">{{ event.title }}</h1>
-    </div>
-    <div class="d-flex gap-2">
-        <a href="{% url 'event_edit' event.pk %}" class="btn btn-secondary">Edit</a>
+      {% if event.description %}
+      <div class="mb-4">
+        <p style="line-height: 1.7;">{{ event.description }}</p>
+      </div>
+      {% endif %}
+
+      {% if event_categories %}
+      <div class="mb-3">
+        <strong>Categories:</strong>
+        {% for cat in event_categories %}
+        <span class="badge bg-secondary ms-1">{{ cat.name }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="d-flex gap-2 mt-4">
+        <a href="{% url 'event_edit' event.pk %}" class="btn btn-outline-secondary">Edit Event</a>
         <a href="{% url 'event_delete' event.pk %}" class="btn btn-outline-danger">Delete</a>
+        <a href="{% url 'event_list' %}" class="btn btn-link">← Back to list</a>
+      </div>
     </div>
-</div>
 
-<div class="card" style="margin-bottom: 1rem;">
-    <div class="card-body">
-        <p
-            style="color: var(--grey2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; margin-bottom: 0.6rem;">
-            Description</p>
-        <p style="color: var(--grey1); font-size: 0.95rem; line-height: 1.7;">{{ event.description }}</p>
-    </div>
-</div>
-
-<div class="row g-3" style="margin-bottom: 1rem;">
-    <div class="col-md-6">
-        <div class="card h-100">
-            <div class="card-body">
-                <p
-                    style="color: var(--grey2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; margin-bottom: 0.9rem;">
-                    Event Details</p>
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--grey2); font-size: 0.85rem;">Date</span>
-                        <span style="color: var(--white); font-weight: 500; font-size: 0.9rem;">{{ event.date|format_date }}</span>
-                    </div>
-                    <div style="height: 1px; background: var(--border);"></div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--grey2); font-size: 0.85rem;">Time</span>
-                        <span style="color: var(--white); font-weight: 500; font-size: 0.9rem;">{{ event.time|format_time }}</span>
-                    </div>
-                    <div style="height: 1px; background: var(--border);"></div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--grey2); font-size: 0.85rem;">Price</span>
-                        <span style="color: var(--amber2); font-weight: 600; font-size: 0.9rem;">{{ event.price|format_price }}</span>
-                    </div>
-                </div>
-            </div>
+    <div class="col-md-4">
+        <div class="card" style="border: 1px solid var(--border-color, #25253a);">
+        <div class="card-body">
+          <h6 style="font-size:0.75rem; letter-spacing:1px; text-transform:uppercase; color: var(--text-muted);">Event Details</h6>
+          <ul class="list-unstyled mb-0">
+            <li class="mb-2">
+              <strong>Date:</strong> {{ event.date }}
+              <span class="text-muted ms-1" style="font-size:0.85rem;">({{ event.date|days_until }})</span>
+            </li>
+            {% if event.time %}
+            <li class="mb-2"><strong>Time:</strong> {{ event.time }}</li>
+            {% endif %}
+            <li class="mb-2">
+              <strong>Price:</strong>
+              <span class="{% if event.is_free %}text-success{% endif %}">{{ event.price|format_price }}</span>
+            </li>
+            {% if event.max_attendees %}
+            <li class="mb-2"><strong>Max attendees:</strong> {{ event.max_attendees }}</li>
+            {% endif %}
+            {% if event.venue %}
+            <li class="mb-2">
+              <strong>Venue:</strong>
+              <a href="{% url 'venue_detail' event.venue.pk %}">{{ event.venue.name }}</a>
+              <div class="text-muted small">{{ event.venue.city }}</div>
+            </li>
+            {% endif %}
+          </ul>
         </div>
+      </div>
     </div>
-
-    <div class="col-md-6">
-        <div class="card h-100">
-            <div class="card-body">
-                <p
-                    style="color: var(--grey2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; margin-bottom: 0.9rem;">
-                    Venue</p>
-                <p style="color: var(--white); font-weight: 600; font-size: 1rem; margin-bottom: 0.3rem;">{{ event.venue.name }}</p>
-                <p style="color: var(--grey2); font-size: 0.875rem; margin-bottom: 0.3rem;">{{ event.venue.address }}
-                </p>
-                <p style="color: var(--grey3); font-size: 0.82rem; margin-bottom: 1rem;">Capacity: {{ event.venue.capacity }} people</p>
-                <a href="{% url 'venue_detail' event.venue.pk %}" class="btn btn-outline-primary btn-sm">View Venue</a>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
-
-<div class="d-flex gap-2" style="margin-top: 1rem;">
-    <a href="{% url 'event_list' %}" class="btn btn-outline-secondary">← Events</a>
-    <a href="{% url 'event_edit' event.pk %}" class="btn btn-primary">Edit Event</a>
-</div>
-
 {% endblock %}

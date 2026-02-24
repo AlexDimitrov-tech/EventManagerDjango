@@ -1,16 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}404 — Page Not Found{% endblock %}
+{% block title %}Page Not Found – LocalVibe{% endblock %}
 
 {% block content %}
-
-<div style="text-align: center; padding: 5rem 1rem;">
-    <p class="display-1" style="margin-bottom: 0.5rem;">404</p>
-    <h2 style="font-size: 1.4rem; margin-bottom: 0.75rem; color: var(--white);">Page Not Found</h2>
-    <p style="color: var(--grey2); font-size: 0.95rem; max-width: 360px; margin: 0 auto 1.75rem;">
-        That page doesn't seem to exist. Maybe it was moved or the URL was mistyped.
-    </p>
-    <a href="{% url 'home' %}" class="btn btn-primary">Back to Home</a>
+<div class="container text-center py-5">
+  <h1 style="font-size: 6rem; font-weight: 700; color: #6c63ff;">404</h1>
+  <h2 class="mb-3">Page Not Found</h2>
+  <p class="text-muted">Sorry, we couldn't find what you were looking for.</p>
+  <a href="/" class="btn btn-primary mt-3">Go Home</a>
 </div>
-
 {% endblock %}

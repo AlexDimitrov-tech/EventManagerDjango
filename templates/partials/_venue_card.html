@@ -1,0 +1,26 @@
+{% load event_extras %}
+<div class="card h-100">
+    <div class="card-body d-flex flex-column">
+        <h5 class="card-title">{{ venue.name }}</h5>
+        <p style="font-size: 0.85rem; color: #7878a0; margin-bottom: 0.5rem;">{{ venue.address }}</p>
+
+        <div class="mb-3">
+            <span class="badge bg-secondary me-1">
+                {{ venue.capacity }} people
+            </span>
+            <span class="badge" style="background: rgba(240,160,87,0.15); color: #f5b878; border: 1px solid rgba(240,160,87,0.3); font-size: 0.72rem;">
+                {{ venue.capacity|venue_size }}
+            </span>
+        </div>
+
+        {% if venue.phone %}
+        <p style="font-size: 0.8rem; color: #7878a0; margin-bottom: 0.25rem;">📞 {{ venue.phone }}</p>
+        {% endif %}
+
+        <div class="mt-auto pt-2 d-flex gap-2">
+            <a href="{% url 'venue_detail' venue.pk %}" class="btn btn-primary btn-sm">View</a>
+            <a href="{% url 'venue_edit' venue.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+            <a href="{% url 'venue_delete' venue.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+        </div>
+    </div>
+</div>

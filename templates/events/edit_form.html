@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} – LocalVibe{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 700px;">
+  <h2 class="mb-1">{{ page_title }}</h2>
+  <p class="text-muted mb-4">Update the event details below.</p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger mb-3">
+      {% for err in form.non_field_errors %}
+      <p class="mb-0">{{ err }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% for field in form %}
+    <div class="mb-3">
+      <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}
+      <small class="text-muted d-block mt-1">{{ field.help_text }}</small>
+      {% endif %}
+      {% for err in field.errors %}
+      <div class="text-danger small">{{ err }}</div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn btn-success">Update</button>
+      <a href="{{ event.get_absolute_url }}" class="btn btn-outline-secondary">Cancel</a>
+      <a href="{% url 'event_delete' event.pk %}" class="btn btn-outline-danger ms-auto">Delete this event</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

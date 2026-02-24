@@ -1,85 +1,62 @@
 {% extends 'base.html' %}
+{% load event_extras %}
 
-{% block title %}{{ venue.name }} — EventManager{% endblock %}
+{% block title %}{{ venue.name }} – LocalVibe{% endblock %}
 
 {% block content %}
+<div class="container py-4">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'venue_list' %}">Venues</a></li>
+      <li class="breadcrumb-item active">{{ venue.name }}</li>
+    </ol>
+  </nav>
 
-<div style="margin-top: 0.25rem; margin-bottom: 1.5rem;">
-    <a href="{% url 'venue_list' %}"
-        style="color: var(--grey2); font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem; transition: color 0.15s;"
-        onmouseover="this.style.color='var(--violet2)'" onmouseout="this.style.color='var(--grey2)'">
-        ← Back to Venues
-    </a>
-</div>
+  <div class="row">
+    <div class="col-md-7">
+      <h1 class="mb-1">{{ venue.name }}</h1>
+      <p class="text-muted mb-3">{{ venue.city }}</p>
 
-<div
-    style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap;">
-    <h1 style="font-size: 1.7rem; letter-spacing: -0.5px;">{{ venue.name }}</h1>
-    <div class="d-flex gap-2">
-        <a href="{% url 'venue_edit' venue.pk %}" class="btn btn-secondary">Edit</a>
-        <a href="{% url 'venue_delete' venue.pk %}" class="btn btn-outline-danger">Delete</a>
+      <ul class="list-unstyled mb-4">
+        <li class="mb-1"><strong>Address:</strong> {{ venue.address }}, {{ venue.city }}</li>
+        <li class="mb-1"><strong>Capacity:</strong> {{ venue.capacity }} ({{ venue.capacity|venue_size }})</li>
+        {% if venue.phone %}<li class="mb-1"><strong>Phone:</strong> {{ venue.phone }}</li>{% endif %}
+        {% if venue.email %}<li class="mb-1"><strong>Email:</strong> {{ venue.email }}</li>{% endif %}
+      </ul>
+
+      <a href="{% url 'venue_edit' venue.pk %}" class="btn btn-outline-secondary btn-sm me-2">Edit Venue</a>
+      <a href="{% url 'venue_delete' venue.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
     </div>
-</div>
 
-<div class="card" style="margin-bottom: 1rem;">
-    <div class="card-body">
-        <p
-            style="color: var(--grey2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; margin-bottom: 0.9rem;">
-            Venue Info</p>
-        <div style="display: flex; flex-direction: column; gap: 0.55rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: var(--grey2); font-size: 0.875rem;">Address</span>
-                <span style="color: var(--white); font-size: 0.9rem;">{{ venue.address }}</span>
-            </div>
-            <div style="height: 1px; background: var(--border);"></div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: var(--grey2); font-size: 0.875rem;">Capacity</span>
-                <span style="color: var(--violet2); font-weight: 600; font-size: 0.9rem;">{{ venue.capacity }}
-                    people</span>
-            </div>
-            <div style="height: 1px; background: var(--border);"></div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: var(--grey2); font-size: 0.875rem;">Added</span>
-                <span style="color: var(--grey2); font-size: 0.875rem;">{{ venue.created_at|date:"F d, Y" }}</span>
-            </div>
-        </div>
+    <div class="col-md-5">
+      {% if upcoming_events %}
+      <h5 class="mb-3">Upcoming Events Here</h5>
+      <ul class="list-group mb-4">
+        {% for ev in upcoming_events %}
+        <li class="list-group-item">
+          <a href="{{ ev.get_absolute_url }}" class="text-decoration-none">{{ ev.title }}</a>
+          <span class="float-end text-muted small">{{ ev.date }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      {% if past_events %}
+      <h5 class="mb-3 text-muted">Past Events</h5>
+      <ul class="list-group">
+        {% for ev in past_events %}
+        <li class="list-group-item list-group-item-light">
+          <a href="{{ ev.get_absolute_url }}" class="text-muted text-decoration-none">{{ ev.title }}</a>
+          <span class="float-end small text-muted">{{ ev.date }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      {% if not upcoming_events and not past_events %}
+      <p class="text-muted">No events at this venue yet.</p>
+      {% endif %}
     </div>
+  </div>
 </div>
-
-{% if events %}
-<div class="card" style="margin-bottom: 1rem;">
-    <div class="card-body">
-        <p
-            style="color: var(--grey2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; margin-bottom: 0.75rem;">
-            Events here ({{ events|length }})
-        </p>
-        <div class="list-group">
-            {% for event in events %}
-            <a href="{% url 'event_detail' event.pk %}" class="list-group-item list-group-item-action">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
-                    <div>
-                        <h6>{{ event.title }}</h6>
-                        <p>{{ event.description|truncatewords:15 }}</p>
-                    </div>
-                    <small>{{ event.date|date:"M d, Y" }}</small>
-                </div>
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-{% else %}
-<div class="card" style="margin-bottom: 1rem;">
-    <div class="card-body" style="text-align: center; padding: 2.5rem 1.5rem;">
-        <p style="color: var(--grey2); font-size: 0.875rem; margin-bottom: 1rem;">No events scheduled here yet.</p>
-        <a href="{% url 'event_create' %}" class="btn btn-primary btn-sm">Create Event</a>
-    </div>
-</div>
-{% endif %}
-
-<div class="d-flex gap-2" style="margin-top: 0.5rem;">
-    <a href="{% url 'venue_list' %}" class="btn btn-outline-secondary">← Venues</a>
-    <a href="{% url 'venue_edit' venue.pk %}" class="btn btn-primary">Edit Venue</a>
-</div>
-
 {% endblock %}

@@ -1,49 +1,17 @@
 {% extends 'base.html' %}
 
-{% block title %}Delete Venue — EventManager{% endblock %}
+{% block title %}Delete Venue – LocalVibe{% endblock %}
 
 {% block content %}
+<div class="container py-5" style="max-width: 500px;">
+  <h2>Remove Venue</h2>
+  <p>Are you sure you want to delete <strong>{{ venue.name }}</strong>?</p>
+  <p class="text-danger small">All events linked to this venue will lose their venue reference.</p>
 
-<div style="max-width: 520px; margin: 2rem auto;">
-
-    <div style="text-align: center; margin-bottom: 1.5rem;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⚠️</div>
-        <h1 style="font-size: 1.5rem; margin-bottom: 0.4rem;">Delete Venue</h1>
-        <p style="color: var(--grey2); font-size: 0.9rem;">
-            This will also remove all events associated with this venue. Please be sure.
-        </p>
-    </div>
-
-    <div class="card border-danger" style="margin-bottom: 1rem;">
-        <div class="card-body">
-            <p
-                style="font-size: 0.75rem; color: var(--grey2); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 0.75rem;">
-                Venue to be deleted</p>
-
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--grey2); font-size: 0.875rem;">Name</span>
-                    <span style="color: var(--white); font-weight: 500; font-size: 0.875rem;">{{ venue.name }}</span>
-                </div>
-                <div style="height: 1px; background: rgba(224, 85, 85, 0.15);"></div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--grey2); font-size: 0.875rem;">Address</span>
-                    <span style="color: var(--white); font-size: 0.875rem;">{{ venue.address }}</span>
-                </div>
-                <div style="height: 1px; background: rgba(224, 85, 85, 0.15);"></div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--grey2); font-size: 0.875rem;">Capacity</span>
-                    <span style="color: var(--white); font-size: 0.875rem;">{{ venue.capacity }} people</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <form method="post" class="d-flex gap-2">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Yes, Delete</button>
-        <a href="{% url 'venue_detail' venue.pk %}" class="btn btn-outline-secondary">Go Back</a>
-    </form>
-
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, remove it</button>
+    <a href="{% url 'venue_detail' venue.pk %}" class="btn btn-outline-secondary ms-2">Go back</a>
+  </form>
 </div>
 {% endblock %}

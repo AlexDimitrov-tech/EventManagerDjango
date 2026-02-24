@@ -1,13 +1,19 @@
-import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY =  'django-insecure-event-manager-key-change-in-production'
+SECRET_KEY = 'django-insecure-localvibe-secret-key-change-in-production'
 
 DEBUG = True
 
-ALLOWED_HOSTS = [ ]
+ALLOWED_HOSTS = ['*']
+
+
+my_local_apps = [
+    'events',
+    'venues',
+    'categories',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -16,12 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    # my apps are here
-    'events',
-    'venues',
-    'categories',
-]
+] + my_local_apps
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,9 +59,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'event_manager_db',
         'USER': 'alex',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
@@ -76,10 +77,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

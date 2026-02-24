@@ -1,116 +1,43 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ title }} — EventManager{% endblock %}
+{% block title %}{{ page_title }} – LocalVibe{% endblock %}
 
 {% block content %}
+<div class="container py-4" style="max-width: 700px;">
+  <h2 class="mb-4">{{ page_title }}</h2>
 
-<div style="max-width: 680px; margin: 0.5rem auto 0;">
+  <form method="post" novalidate>
+    {% csrf_token %}
 
-    <div style="margin-bottom: 1.5rem;">
-        <h1 style="font-size: 1.6rem; margin-bottom: 0.25rem;">{{ title }}</h1>
-        <p style="color: var(--grey2); font-size: 0.875rem;">Fill in the details below and save when ready.</p>
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      {% for err in form.non_field_errors %}
+      <div>{{ err }}</div>
+      {% endfor %}
     </div>
+    {% endif %}
 
-    <div class="card">
-        <div class="card-body" style="padding: 1.75rem;">
-            <form method="post">
-                {% csrf_token %}
-
-                <div style="margin-bottom: 1.1rem;">
-                    <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
-                    {{ form.title }}
-                    {% if form.title.errors %}
-                    <div style="color: #f08080; font-size: 0.8rem; margin-top: 0.35rem;">{{ form.title.errors }}</div>
-                    {% endif %}
-                    {% if form.title.help_text %}
-                    <div class="form-text">{{ form.title.help_text }}</div>
-                    {% endif %}
-                </div>
-
-                <div style="margin-bottom: 1.1rem;">
-                    <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
-                    {{ form.description }}
-                    {% if form.description.errors %}
-                    <div style="color: #f08080; font-size: 0.8rem; margin-top: 0.35rem;">{{ form.description.errors }}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <div class="row g-3" style="margin-bottom: 1.1rem;">
-                    <div class="col-md-6">
-                        <label for="{{ form.date.id_for_label }}" class="form-label">{{ form.date.label }}</label>
-                        {{ form.date }}
-                        {% if form.date.errors %}
-                        <div style="color: #f08080; font-size: 0.8rem; margin-top: 0.35rem;">{{ form.date.errors }}
-                        </div>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <label for="{{ form.time.id_for_label }}" class="form-label">{{ form.time.label }}</label>
-                        {{ form.time }}
-                        {% if form.time.errors %}
-                        <div style="color: #f08080; font-size: 0.8rem; margin-top: 0.35rem;">{{ form.time.errors }}
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 1.1rem;">
-                    <label for="{{ form.venue.id_for_label }}" class="form-label">{{ form.venue.label }}</label>
-                    {{ form.venue }}
-                    {% if form.venue.errors %}
-                    <div style="color: #f08080; font-size: 0.8rem; margin-top: 0.35rem;">{{ form.venue.errors }}</div>
-                    {% endif %}
-                </div>
-
-                <div style="margin-bottom: 1.1rem;">
-                    <label class="form-label">{{ form.categories.label }}</label>
-                    <div class="border rounded p-3">
-                        {% for checkbox in form.categories %}
-                        <div class="form-check">
-                            {{ checkbox.tag }}
-                            <label class="form-check-label" for="{{ checkbox.id_for_label }}">
-                                {{ checkbox.choice_label }}
-                            </label>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% if form.categories.errors %}
-                    <div style="color: #f08080; font-size: 0.8rem; margin-top: 0.35rem;">{{ form.categories.errors }}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="{{ form.price.id_for_label }}" class="form-label">{{ form.price.label }}</label>
-                    {{ form.price }}
-                    {% if form.price.errors %}
-                    <div style="color: #f08080; font-size: 0.8rem; margin-top: 0.35rem;">{{ form.price.errors }}</div>
-                    {% endif %}
-                    {% if form.price.help_text %}
-                    <div class="form-text">{{ form.price.help_text }}</div>
-                    {% endif %}
-                </div>
-
-                {% if 'created_at' in form.fields %}
-                <div style="margin-bottom: 2rem;">
-                    <label for="{{ form.created_at.id_for_label }}" class="form-label">{{ form.created_at.label }}</label>
-                    {{ form.created_at }}
-                    <div class="form-text" style="color: var(--grey2);">This field is read-only.</div>
-                </div>
-                {% endif %}
-
-                <div style="display: flex; gap: 0.6rem; padding-top: 0.5rem; border-top: 1px solid var(--border);">
-                    <button type="submit" class="btn btn-primary">Save Event</button>
-                    {% if event %}
-                    <a href="{% url 'event_detail' event.pk %}" class="btn btn-outline-secondary">Cancel</a>
-                    {% else %}
-                    <a href="{% url 'event_list' %}" class="btn btn-outline-secondary">Cancel</a>
-                    {% endif %}
-                </div>
-            </form>
-        </div>
+    {% for field in form %}
+    <div class="mb-3">
+      <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}
+      <div class="form-text text-muted">{{ field.help_text }}</div>
+      {% endif %}
+      {% if field.errors %}
+      <div class="text-danger small mt-1">
+        {% for err in field.errors %}
+        <div>{{ err }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
     </div>
+    {% endfor %}
 
+    <div class="mt-4">
+      <button type="submit" class="btn btn-primary">Save Event</button>
+      <a href="{% url 'event_list' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </div>
+  </form>
 </div>
 {% endblock %}

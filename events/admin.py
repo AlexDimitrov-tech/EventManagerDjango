@@ -4,6 +4,6 @@ from .models import Event
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ['title', 'date', 'time', 'venue']
-    list_filter = ['date', 'venue']
-    search_fields = ['title', 'description']
+    list_display = ['title', 'date', 'venue', 'status', 'price']
+    list_filter = ['status']
+    search_fields = ['title']

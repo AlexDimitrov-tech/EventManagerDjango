@@ -1,45 +1,32 @@
 {% extends 'base.html' %}
 
-{% block title %}Categories — EventManager{% endblock %}
+{% block title %}Categories – LocalVibe{% endblock %}
 
 {% block content %}
+<div class="container py-4">
+  <h2 class="mb-4">Browse by Category</h2>
 
-<div class="page-header" style="margin-top: 0.5rem;">
-    <h1>Categories</h1>
-</div>
-
-<div class="row g-3">
-    {% for category in categories %}
-    <div class="col-md-4 col-sm-6">
-        <div class="card h-100">
-            <div class="card-body">
-                <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem;">
-                    <span
-                        style="background: rgba(124, 111, 240, 0.12); border: 1px solid rgba(124, 111, 240, 0.2); border-radius: 6px; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 600; color: var(--violet2);">
-                        🏷️
-                    </span>
-                    <h5 class="card-title" style="margin: 0;">{{ category.name }}</h5>
-                </div>
-
-                {% if category.description %}
-                <p class="card-text" style="font-size: 0.875rem; color: var(--grey2);">{{ category.description }}</p>
-                {% else %}
-                <p class="card-text" style="font-size: 0.875rem; color: var(--grey3); font-style: italic;">No
-                    description</p>
-                {% endif %}
-            </div>
+  {% if categories_with_counts %}
+  <div class="row row-cols-1 row-cols-md-3 g-3">
+    {% for item in categories_with_counts %}
+    <div class="col">
+      <div class="card text-center h-100" style="border-top: 3px solid #6c63ff;">
+        <div class="card-body py-4">
+          <h5 class="card-title">{{ item.category.name }}</h5>
+          {% if item.category.description %}
+          <p class="text-muted small">{{ item.category.description }}</p>
+          {% endif %}
+          <span class="badge bg-primary">{{ item.event_count }} event{{ item.event_count|pluralize }}</span>
         </div>
-    </div>
-    {% empty %}
-    <div class="col-12">
-        <div class="card">
-            <div class="empty-state">
-                <div class="icon">🏷️</div>
-                <p>No categories have been set up yet.</p>
-            </div>
+        <div class="card-footer bg-transparent">
+          <a href="{% url 'event_list' %}?category={{ item.category.pk }}" class="btn btn-sm btn-outline-primary">View Events</a>
         </div>
+      </div>
     </div>
     {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-muted">No categories found.</p>
+  {% endif %}
 </div>
-
 {% endblock %}

@@ -1,87 +1,56 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}EventManager{% endblock %}</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}LocalVibe{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_css %}{% endblock %}
 </head>
-
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                Event<span class="accent">Manager</span>
-            </a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">LocalVibe</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'event_list' %}">Events</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'venue_list' %}">Venues</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'category_list' %}">Categories</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'event_create' %}">+ Add Event</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<main>
+  <div class="container mt-3">
+    {% if messages %}
+    {% for msg in messages %}
+    <div class="alert alert-{{ msg.tags }} alert-dismissible fade show" role="alert">
+      {{ msg }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
 
-            <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav ms-auto align-items-lg-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'event_list' %}">Events</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'venue_list' %}">Venues</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'category_list' %}">Categories</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+  {% block content %}{% endblock %}
+</main>
 
-    <main>
-        <div class="container">
+<footer class="bg-dark text-light py-4 mt-5">
+  <div class="container text-center">
+    <p class="mb-0" style="font-size: 0.9rem;">LocalVibe – Community Festival & Gathering Platform</p>
+  </div>
+</footer>
 
-            {% if messages %}
-            <div style="margin-top: 1.5rem;">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            {% block content %}
-            {% endblock %}
-
-        </div>
-    </main>
-
-    <footer>
-        <div class="container">
-            <div class="footer-inner">
-                <p>&copy; 2026 EventManager</p>
-                <div class="footer-links">
-                    <a href="{% url 'event_list' %}">Events</a>
-                    <a href="{% url 'venue_list' %}">Venues</a>
-                    <a href="{% url 'category_list' %}">Categories</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
 </body>
-
 </html>
