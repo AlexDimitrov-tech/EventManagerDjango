@@ -16,39 +16,28 @@ class Venue(models.Model):
         ordering = ['name']
 
     def __str__(self):
-        return self.name + ' (' + self.city + ')'
+        return f'{self.name} ({self.city})'
 
     def get_absolute_url(self):
         return reverse('venue_detail', kwargs={'pk': self.pk})
 
     def get_upcoming_events(self):
         today = date.today()
-        all_events = self.events.all()
         upcoming = []
-        for event in all_events:
+        for event in self.events.all():
             if event.date >= today:
                 upcoming.append(event)
         return upcoming
 
-    def get_total_event_count(self):
-        count = self.events.count()
-        return count
-
     def is_available_on(self, check_date):
-        existing = self.events.filter(date=check_date)
-        if existing.exists():
-            return False
-        else:
-            return True
+        return not self.events.filter(date=check_date).exists()
 
     def get_size_label(self):
         cap = self.capacity
         if cap < 50:
-            label = 'Intimate'
+            return 'Intimate'
         elif cap < 200:
-            label = 'Small'
+            return 'Small'
         elif cap < 1000:
-            label = 'Medium'
-        else:
-            label = 'Large'
-        return label
+            return 'Medium'
+        return 'Large'

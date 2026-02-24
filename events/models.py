@@ -9,20 +9,18 @@ STATUS_CHOICES = [
     ('cancelled', 'Cancelled'),
 ]
 
+STATUS_COLORS = {
+    'published': 'success',
+    'cancelled': 'danger',
+    'draft': 'secondary',
+}
+
 
 class EventManager(models.Manager):
 
     def upcoming(self):
-        today = date.today()
-        qs = self.get_queryset()
-        qs = qs.filter(date__gte=today)
-        qs = qs.filter(status='published')
-        return qs
-
-    def published_only(self):
-        qs = self.get_queryset()
-        result = qs.filter(status='published')
-        return result
+        # only show published future events on the homepage
+        return self.get_queryset().filter(date__gte=date.today(), status='published')
 
 
 class Event(models.Model):
@@ -60,38 +58,21 @@ class Event(models.Model):
         return reverse('event_detail', kwargs={'pk': self.pk})
 
     def is_free(self):
-        if self.price == 0:
-            return True
-        else:
-            return False
+        return self.price == 0
 
     def is_past(self):
-        today = date.today()
-        if self.date < today:
-            return True
-        else:
-            return False
+        return self.date < date.today()
 
     def get_price_display_str(self):
         if self.price == 0:
-            price_str = 'Free'
-        else:
-            price_str = '$' + str(self.price)
-        return price_str
+            return 'Free'
+        return f'${self.price}'
 
     def get_status_color(self):
-        if self.status == 'published':
-            color = 'success'
-        elif self.status == 'cancelled':
-            color = 'danger'
-        else:
-            color = 'secondary'
-        return color
+        return STATUS_COLORS.get(self.status, 'secondary')
 
     def clean(self):
         from django.core.exceptions import ValidationError
-        if self.date is not None:
-            today = date.today()
-            if self.date < today:
-                if self.status == 'published':
-                    raise ValidationError('Cannot publish events that are in the past.')
+        # don't let someone publish an event that's already passed
+        if self.date and self.date < date.today() and self.status == 'published':
+            raise ValidationError('Cannot publish events that are in the past.')

@@ -7,12 +7,8 @@ register = template.Library()
 @register.filter
 def format_price(value):
     try:
-        price_float = float(value)
-        if price_float == 0:
-            return 'Free'
-        else:
-            formatted = '${:.2f}'.format(price_float)
-            return formatted
+        f = float(value)
+        return 'Free' if f == 0 else '${:.2f}'.format(f)
     except (ValueError, TypeError):
         return value
 
@@ -21,14 +17,14 @@ def format_price(value):
 def days_until(event_date):
     try:
         today = date.today()
-        if event_date < today:
-            days_ago = (today - event_date).days
-            return str(days_ago) + ' days ago'
-        elif event_date == today:
+        delta = (event_date - today).days
+
+        if delta < 0:
+            return f'{abs(delta)} days ago'
+        elif delta == 0:
             return 'Today!'
         else:
-            days_left = (event_date - today).days
-            return 'in ' + str(days_left) + ' days'
+            return f'in {delta} days'
     except Exception:
         return ''
 
@@ -36,12 +32,8 @@ def days_until(event_date):
 @register.filter
 def short_desc(text, length=120):
     try:
-        text_str = str(text)
-        if len(text_str) <= length:
-            return text_str
-        else:
-            truncated = text_str[:length]
-            return truncated + '...'
+        s = str(text)
+        return s if len(s) <= length else s[:length] + '...'
     except Exception:
         return text
 
@@ -51,13 +43,11 @@ def venue_size(capacity):
     try:
         cap = int(capacity)
         if cap < 50:
-            result = 'Intimate'
+            return 'Intimate'
         elif cap < 200:
-            result = 'Small'
+            return 'Small'
         elif cap < 1000:
-            result = 'Medium'
-        else:
-            result = 'Large'
-        return result
+            return 'Medium'
+        return 'Large'
     except (ValueError, TypeError):
         return 'Unknown'
